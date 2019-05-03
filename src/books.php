@@ -2,6 +2,7 @@
 
 namespace src\books;
 
+use PDO;
 use function core\view\view;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,15 +18,15 @@ function allBooks()
     $pageNumber = $request->get('page');
     $page = (!isset($pageNumber)) ? 1 : $pageNumber;
     $pageResult = ($page - 1) * 4;
-    $books = [];
+    $booksPerPage = 4;
 
-    $result = $app['db']->query("SELECT * FROM books LIMIT $pageResult, 4");
+    $STH = $app['db']->prepare("SELECT * from books limit :page, :per_page");
+    $STH->bindParam(':page', $pageResult, PDO::PARAM_INT);
+    $STH->bindParam(':per_page', $booksPerPage, PDO::PARAM_INT);
+    $STH->execute();
+    $result = $STH->fetchAll(PDO::FETCH_ASSOC);
 
-    while ($row = $result->fetch_assoc()) {
-        $books[] = $row;
-    }
-
-    return view(['default_layout.php', 'books/index.php'], ['books' => $books]);
+    return view(['default_layout.php', 'books/index.php'], ['books' => $result]);
 }
 
 /**
@@ -38,18 +39,21 @@ function sortBy($param)
     global $request;
 
     $pageNumber = $request->get('page');
-    $books = [];
     $page = (!isset($pageNumber)) ? 1 : $pageNumber;
     $pageResult = ($page - 1) * 4;
+    $booksPerPage = 4;
+    $result = '';
 
-    $result = $app['db']->query("SELECT * FROM books ORDER BY $param LIMIT $pageResult, 4");
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            $books[] = $row;
-        }
+    $STH = $app['db']->prepare("SELECT * FROM books ORDER BY $param LIMIT :page, :per_page");
+    $STH->bindParam(':page', $pageResult, PDO::PARAM_INT);
+    $STH->bindParam(':per_page', $booksPerPage, PDO::PARAM_INT);
+
+    if ($STH) {
+        $STH->execute();
+        $result = $STH->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    return view(['default_layout.php', 'books/index.php'], ['books' => $books]);
+    return view(['default_layout.php', 'books/index.php'], ['books' => $result]);
 }
 
 /**
@@ -83,24 +87,22 @@ function searchByTags()
     global $app;
     global $request;
 
-    $books = [];
     $tag = $request->get('search-tag');
 
-    $result = $app['db']->query("
+    $STH = $app['db']->prepare("
         SELECT books.*, books_tag.*, tags.* FROM books 
         INNER JOIN books_tag ON books.ISBN=books_tag.ISBN 
-        INNER JOIN tags ON books_tag.tag=tags.id WHERE books_tag.tag = $tag
+        INNER JOIN tags ON books_tag.tag=tags.id WHERE books_tag.tag = :tag
     ");
+    $STH->bindParam(':tag', $tag, PDO::PARAM_INT);
+    $STH->execute();
+    $books = $STH->fetchAll(PDO::FETCH_ASSOC);
 
     $countTags = [];
     $tags = $app['db']->query("SELECT * FROM tags");
-    while ($row = $tags->fetch_assoc()) {
+    $tags->setFetchMode(PDO::FETCH_ASSOC);
+    while ($row = $tags->fetch()) {
         $countTags[] = $row;
-    }
-
-    while ($row = $result->fetch_assoc()) {
-        $books[] = $row;
-
     }
 
     return view(['default_layout.php', 'books/search_tag.php'], ['books' => $books, 'countTags' => count($countTags)]);
@@ -114,12 +116,10 @@ function bookById($id)
 {
     global $app;
 
-    $books = [];
-    $result = $app['db']->query("SELECT * FROM books WHERE id = $id");
-
-    while ($row = $result->fetch_assoc()) {
-        $books[] = $row;
-    }
+    $STH = $app['db']->prepare("SELECT * FROM books WHERE id = :id");
+    $STH->bindParam(':id', $id, PDO::PARAM_INT);
+    $STH->execute();
+    $books = $STH->fetchAll(PDO::FETCH_ASSOC);
 
     return view(['default_layout.php', 'books/book_by_id.php'], ['books' => $books]);
 }

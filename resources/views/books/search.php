@@ -5,11 +5,12 @@
 <?php
 if (isset($_GET['search']) && ($_GET['search']) != '') {
     if ($q = $app['db']->query($result)) {
-        if ($q->num_rows == 0) {
+        if ($q->rowCount() == 0) {
             echo 'No results for <b>' . $_GET['search'] . '</b>.</br>';
             echo 'Try checking your spelling or use more general terms';
         } else {
-            while ($book = $q->fetch_assoc()) : ?>
+            $q->setFetchMode(PDO::FETCH_ASSOC);
+            while ($book = $q->fetch()) : ?>
                 <div class="book-item">
                     <div class="poster">
                         <a href="<?= \core\router\generate('book_by_id', ['id' => $book['id']]) ?>">

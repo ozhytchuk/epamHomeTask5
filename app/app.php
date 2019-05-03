@@ -31,4 +31,4 @@ $app = [
     ],
 ];
 
-$app['db'] = new mysqli('localhost', 'root', '', 'books');
+$app['db'] = new PDO("mysql:host=localhost;dbname=books", 'root', '');

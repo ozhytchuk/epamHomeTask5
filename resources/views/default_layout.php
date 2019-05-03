@@ -22,9 +22,10 @@
                         <option selected disabled value="">Select a tag</option>
                         <?php
                         global $app;
-                        $result = $app['db']->query("SELECT * FROM tags");
+                        $STH = $app['db']->query("SELECT * FROM tags");
+                        $STH->setFetchMode(PDO::FETCH_ASSOC);
                         $tags = [];
-                        while ($row = $result->fetch_assoc()) {
+                        while ($row = $STH->fetch()) {
                             $tags[] = ['id' => $row['id'], 'tag' => $row['tag']];
                         }
                         foreach ($tags as $tag) : ?>
