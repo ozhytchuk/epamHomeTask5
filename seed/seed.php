@@ -14,14 +14,15 @@ $DBH->query('DELETE FROM books');
 
 $author = $faker->firstName . ' ' . $faker->lastName;
 
-for ($i = 0; $i < 5; $i++) {
-    $STH = $DBH->prepare('
+$STH = $DBH->prepare('
     INSERT INTO 
-    books 
-    (ISBN, title, author, description, poster, url, price, book_tags, book_date) 
+        books 
+        (ISBN, title, author, description, poster, url, price, book_tags, book_date) 
     VALUES 
-    (:ISBN, :title, :author, :description, :poster, :url, :price, :book_tags, :book_date)
+        (:ISBN, :title, :author, :description, :poster, :url, :price, :book_tags, :book_date)
     ');
+
+for ($i = 0; $i < 5; $i++) {
     $STH->bindParam(':ISBN', $faker->randomNumber(9));
     $STH->bindParam(':title', $faker->text(75));
     $STH->bindParam(':author', $author);
