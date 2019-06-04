@@ -27,7 +27,37 @@ $app = [
             'path' => '/books/sort-by/{param}',
             'file' => 'books.php',
             'function' => 'src\\books\\sortBy'
-        ]
+        ],
+        'admin' => [
+            'path' => '/admin',
+            'file' => 'admin/index.php',
+            'function' => 'src\\admin\\index',
+        ],
+        'delete_book' => [
+            'path' => '/admin/delete/{id}',
+            'file' => 'admin/index.php',
+            'function' => 'src\\admin\\deleteBook',
+        ],
+        'edit_book' => [
+            'path' => '/admin/edit/{id}',
+            'file' => 'admin/index.php',
+            'function' => 'src\\admin\\editBook',
+        ],
+        'by_id' => [
+            'path' => '/admin/view/{id}',
+            'file' => 'admin/index.php',
+            'function' => 'src\\admin\\bookById',
+        ],
+        'create' => [
+            'path' => '/admin/create',
+            'file' => 'admin/index.php',
+            'function' => 'src\\admin\\create',
+        ],
+        'form' => [
+            'path' => '/admin/form',
+            'file' => 'admin/index.php',
+            'function' => 'src\\admin\\form',
+        ],
     ],
 ];
 
