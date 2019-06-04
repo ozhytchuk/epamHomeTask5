@@ -6,7 +6,7 @@ $app = [
         'books' => [
             'path' => '/',
             'file' => 'books.php',
-            'function' => 'src\\books\\allBooks',
+            'function' => 'src\\books\\index',
         ],
         'search_by_word' => [
             'path' => '/books/find-words',
@@ -31,4 +31,5 @@ $app = [
     ],
 ];
 
-$app['db'] = new PDO("mysql:host=localhost;dbname=books", 'root', '');
+$app['db'] = new PDO("mysql:host=localhost;dbname=book_store", 'root', '');
+$app['per_page'] = 4;

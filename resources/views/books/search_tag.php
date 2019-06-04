@@ -1,9 +1,9 @@
-<?php if ($_GET['search-tag'] > 0 && $_GET['search-tag'] <= $countTags) : ?>
+<?php if (isset($_GET['search-tag']) && $_GET['search-tag'] > 0 && $_GET['search-tag'] <= $countTags && count($books) > 1) : ?>
     <div class="sort-items">
     <span class="sort-items-desc">Search by tag: <span class="badge badge-warning"
                                                        id="find-name"><?= $books[0]['tag'] ?></span></span>
     </div>
-<?php else : ?>
+<?php elseif(count($books) === 0) : ?>
     <div class="alert alert-warning">
         <strong>SORRY,</strong> we couldn't find this page.
     </div>
@@ -13,13 +13,11 @@
     foreach ($books as $book) : ?>
         <div class="book-item">
             <div class="poster">
-                <a href="<?= \core\router\generate('book_by_id', ['id' => $book['id']]) ?>">
-                    <img src="<?= $book['poster'] ?>" alt="<?= $book['name'] ?>" class="media-object">
-                </a>
+                <img src="<?= $book['poster'] ?>" alt="<?= $book['title'] ?>" class="media-object">
             </div>
             <div>
                 <h4 class="book-title"><a
-                        href="<?= \core\router\generate('book_by_id', ['id' => $book['id']]) ?>"><?= $book['name'] ?></a>
+                        href="<?=$book['url']?>"><?= $book['title'] ?></a>
                 </h4>
                 <p><b>Author</b>: <?= $book['author'] ?></p>
                 <p><b>Price</b>: <span style="color: #3c763d;"><?= sprintf("$ %01.2f", $book['price']) ?></span></p>
@@ -33,7 +31,6 @@
                         <span class="badge badge-pill badge-success"><?= $tag ?></span>
                     <?php endforeach; ?>
                 </p>
-                <a href="<?= \core\router\generate('book_by_id', ['id' => $book['id']]) ?>" class="btn btn-primary">Details</a>
             </div>
         </div>
     <?php endforeach;

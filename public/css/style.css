@@ -52,9 +52,15 @@ header {
 }
 
 .pagination-page {
-    margin-left: 45%;
+    width: max-content;
+    margin: 20px auto;
 }
-
+.pag {
+    border-top: 1px solid grey;
+}
+a.page-link {
+    display: inline-block;
+}
 a.page-link:hover {
     background-color: #007BFF;
     color: wheat;
